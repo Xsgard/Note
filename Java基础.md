@@ -219,6 +219,8 @@ java.io.DataOutput
 java.io.Reader
 	\- FileReader
 	\- CharArrayReader
+	\- FilterReader 
+		\- PushbackReader
 	\- BufferedReader	[*]自带换成，支持整行的读取
 	\- InputStreamReader (字节流到字符流的桥接器)
     \- ....
@@ -231,6 +233,10 @@ java.io.Reader
 - read(char[] buf,int offset,int length)  -》尝试从偏移量offset处读取length个字符
 - close()  -》 释放
 
+**BufferedReader的方法**
+
+- readLine() -> String 此方法以换行符为终止符，但是，返回的字符串不包含终止符
+
 
 
 #### 2.2.2 字符输出流
@@ -239,20 +245,45 @@ java.io.Reader
 java.io.Writer
 	\- FileWriter
 	\- CharArrayWriter
+	\- OutputStreamWriter [字节输出流到字符输出流的桥接器]
 	\- BufferedReader
-	\- PrintWriter [*]自带换成，支持整行的写入
+	\- PrintWriter [*]自带换成，支持整行的写入， println()
     \- ....
 ```
 
+**Writer常用方法**
+
+- write(int c) 写入传入的单个字符
+- write(char[] buf)  把buf中的字符写入到输出流，写入的是buf.length个字符
+- write(char[] buf,int offset,int length)同上，写入的是len个字符
+- close()
 
 
 
+#### 2.2.3 有关字节流到字符流的桥接器
 
+> 有些标准输入输出设备被定义成了字节流，我们需要把他们转换为字符流，这里就可以使用桥接器，
+>
+> 如下：
+>
+> BufferedReader br=new BufferedReader(new FIleReader("hello.txt")); //指向文本的字符输入流
+>
+> 再看：
+>
+> BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+>
+> 再，有一个指向文本文件的字节流,并重新指定字符集为GBK
+>
+> BufferedReader br=new BufferedReader(
+>
+> ​											new InputStreamReader(
+>
+> ​													new FileInputStream("hello.txt"),"GBK"));
 
+**InputStreamReader的构造器**
 
-
-
-
+- InputStreamReader(InputStream in) 采用默认字符集做转换器
+- InputStreamReader(InputStream in,String charsetName) 指定字符集做转换器
 
 
 
