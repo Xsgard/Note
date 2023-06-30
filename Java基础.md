@@ -347,32 +347,95 @@ Java.util.Collection
 - T get(int index)  根据下标来访问元素
 - void set(int index,T element)  把元素Element放到指定的位置
 - List subList(int start ,int end) 求子集，含start位置，不含end位置，返回的是新的集合
+- boolean isEmpty();
+
+#### 3.1.4 List的实现类
+
+- ArrayList
+  - public ArrayList();
+  - public ArrayList(int size);
+  - public ArrayList(Collection c);
+- LinkedList
+  - public LinkedList();
+  - public LinkedList(Collection c)
+
+#### 3.1.5 栈的特点 Stack
+
+> 先进后出，FILO，一般只提供对栈顶的操作，包括进栈、出栈、判断栈是否为空，以及栈中的个数
+
+#### 3.1.6 队列的特点 Queue
+
+> 先进先出，FIFO，一般提供对队头的操作【增、删、查】，包含入队出队操作，在JCF的API中，有提供这个接口
+
+```java
+java.util.Queue [接口]
+	\- java.util.Deque [接口]
+```
+
+它的方法主要有如下6个，集中在三个功能上：
+
+添加操作
+
+- add(E element) 如果队列容量不够，则抛出异常
+- offer(E element) 如果队列容量不够，则执行失败返回false
+
+删除操作
+
+- remove() 如果队列为空，则抛出异常
+- poll() 如果队列为空，则返回null
+
+查询操作
+
+- element() 如果队列为空，则抛出异常
+- peek() 如果队列为空，则返回null
+
+**Deque 双端队列** 
+
+> double end Queue,简称Deque，它支持两端进行操作。它是Queue的子接口。
+
+同样，由于它是双端操作，所以，它的核心方法比Queue多一倍，也是集中在三个功能。
+
+添加操作，删除操作，查询操作
+
+#### Collection集合的结构类图
+
+```Java
+java.lang.Iterable
+	\- java.util.Collection
+		\- java.util.List
+			\- ArrayList
+			\- LinkedList
+			\- Vector
+		\- java.util.Set
+			\- HashSet
+			\- java.util.SortedSet
+				\- TreeSet
+		\- java.util.Queue
+			\- PriorityQueue
+			\- java.util.Deque
+				\-ArrayDeque
+	//注： 以上带包的都是 接口，不带包的都是 实现类	
+```
 
 
 
+#### 3.1.7 Set
 
+> 几乎与Collection一样。
+>
+> 它的特点是：无序、不可重复
 
+**实现类：HashSet**
 
+> 它是如何做到无序及不可重复的呢？
 
+首先， 当我们把一个对象添加到HashSet时，这个容器会调用对象的hashcode()方法，得到一个整数。根据这个整数来计算出此对象应该存放的位置。
 
+其次，当我们再次添加一个对象时，同样会调用此对象的hashcode()方法，得到一个整数，算出他该存储的位置，此时，如果这个位置已经被占用，则会调用它的equals()方法，如果返回true，说明此对象与之前的对象相等，则放弃存入。如果，返回false，则表示对象不相等，则利用红黑树来存储进行纵向扩展。
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+> 注：
+>
+> 上面的原理，其实是HashMap的原理，而HashSet中，只是组合了HashMap，并且只是利用了她的Key，而Value永远是同一个Object
 
 
 
