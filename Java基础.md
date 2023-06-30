@@ -322,6 +322,37 @@ Java.util.Collection
 
 - boolean add(T element) 往容器中添加一个新元素
 - boolean AddAll(Collection allElement) 往容器中添加指定容器的所有元素
+- boolean remove(T element) 从容器中移除指定的对象
+- boolean removeAll() 从当前集合中删除指定集合中的所有元素
+- void clear() 从容器中移除所有元素
+- boolean contains(T element) 判断当前容器是否包含指定元素
+- boolean containsAll(Collection elements) 判断当前容器是否包含集合中所有元素
+- int size() 获取当前集合有效元素的个数
+- toArray() 把集合转换成数组
+- Iterator iterator() 返回指向当前集合的迭代器
+
+#### 3.1.1 Iterator接口
+
+- boolean hasNext() 判断迭代器中是否有下一个可使用的元素
+- T next() 取出迭代器指向的元素，并把指针向下移动一次
+
+#### 3.1.2 Iterable接口
+
+- Iterator iterator() 返回当前集合的迭代器
+
+
+
+#### 3.1.3 List 【有序、不可重复】
+
+- T get(int index)  根据下标来访问元素
+- void set(int index,T element)  把元素Element放到指定的位置
+- List subList(int start ,int end) 求子集，含start位置，不含end位置，返回的是新的集合
+
+
+
+
+
+
 
 
 
