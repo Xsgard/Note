@@ -439,9 +439,24 @@ java.lang.Iterable
 
 
 
+#### 3.1.8 TreeSet的使用
+
+> 实现了SortedSet接口
+
+**特点：不可重复，加入即自动排序**
+
+**TreeSet如何实现加入即排序的？**
+
+> 排序的接口：
+>
+> ​	1.java.lang.Comparable<T>
+>
+> ​			方法：int compareTo(T other)
+>
+> ​	2.java.util.Compartor
+>
+> ​			方法：int compare(T o1,T o2)
 
 
 
-
-
-
+### 3.2.0 Map
