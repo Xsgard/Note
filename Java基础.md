@@ -287,17 +287,41 @@ java.io.Writer
 
 
 
+## 3.0 集合框架 【JCF】
+
+> Java Collection Framework，它是由一组API组成，主要针对容器封装，底层有不同的实现，比如有基于数组的实现，有链表、哈希算法、二叉树的实现。
+>
+> 在Java中，数据容器有两种
+>
+> ​	1.基于值的存储，有：List，Set
+>
+> ​	2.基于键、值对的存储，有Map
+
+#### 3.0.1 基于值的存储
+
+```Java
+Java.util.Collection
+		\- List  有序、可排序、可重复
+			\- ArrayList   基于数组实现
+			\- LinkedList  基于链表实现
+			\- Vector      同ArrayList，它是多线程安全的、一个重量级的集合（synchronized）所有方法						    都是同步方法
+		\- Set   无序、不可排序、不可重复
+			\- HashSet 	   使用哈希算法实现的
+			\- SortedSet   是Set的一个子接口，他是可排序的，不可重复
+				\- TreeSet 使用二叉树实现
+```
+
+> 注：由于在Java中，数组容器在操作上有诸多不便，所以，API提供了JCF供我们使用。如此多的类型，他们各自的特点是不同的。
+>
+
+针对List来说，它的特点是元素有序、可排序、可重复，提供了基于数组和双向链表的不同实现，我们在选择时，可根据实际情况进行选择。
 
 
 
+### 3.1.0 Collection的操作方法
 
-
-
-
-
-
-
-
+- boolean add(T element) 往容器中添加一个新元素
+- boolean AddAll(Collection allElement) 往容器中添加指定容器的所有元素
 
 
 
