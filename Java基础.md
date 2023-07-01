@@ -435,7 +435,7 @@ java.lang.Iterable
 
 > 注：
 >
-> 上面的原理，其实是HashMap的原理，而HashSet中，只是组合了HashMap，并且只是利用了她的Key，而Value永远是同一个Object
+> 上面的原理，其实是HashMap的原理，而HashSet中，只是组合了HashMap，并且只是利用了它的Key，而Value永远是同一个Object
 
 
 
@@ -460,3 +460,118 @@ java.lang.Iterable
 
 
 ### 3.2.0 Map
+
+> 键 值 对的存储
+
+```java
+Map [I]
+	\- HashMap
+	\- SortedMap [I]
+		\- TreeMap
+```
+
+
+
+#### 3.2.1 HashMap
+
+> 基于Hash算法的一种Map实现
+
+
+
+**HashMap的key是唯一、不可重复的**
+
+> 他是如何做到的？
+>
+> 
+
+原理：
+
+作为Map的key的类型，要求：
+
+- 重写hashcode方法
+
+- 重写equals方法
+
+  > 将对象放入HashMap时，首先会调用hashcode方法得到hash码值，根据对象的hash码值决定放入容器的位置。再次放入对象时，还是先hashcode获取到hash码值，根据对象的hash码值确定放入的位置，如果位置已经被占用，会调用equals方法判断是否与之前存入的对象相同，如果返回为true，说明与之前存入的对象为同一个对象，会将后存入对象的value**替换**之前的value。
+
+如果，没有重写这两个方法，则依赖于Object类提供的默认实现（比较对象的内存地址）。
+
+所以不建议使用自定义类型作为Map的key，应该使用JDK自带的如下类型：
+
+- Integer
+- Long
+- String
+
+注：
+
+我们也可以使用自定义类型来作为Map的key，只要重写equals和hashcode方法。
+
+value的类型可以是任意类型。
+
+ 
+
+#### 3.2.2 Map的迭代
+
+> Map分支不由继承Iterable接口，所以，它本身是不能被直接迭代的。
+>
+> 可以把Map转换成Collection后，再进行迭代
+>
+> ​	**三种迭代方式**
+>
+> - **把Map的key取出来变成一个Set**<K>
+>
+>   ```java
+>   Set<Integer> keys=map.keySet();
+>   //先迭代Set
+>   for(Integer key:keys){
+>       //现根据key来获取value
+>       String value =map.get(key);//通过key来获取value
+>   }
+>   ```
+>
+> - **把Map的value取出来变成一个Collection<V>**
+>
+>   ```java
+>   //
+>   Collection<String> values=map.values();//这个values()方法把key丢掉了
+>   //迭代Collection
+>   for(String value:values){
+>       System.out.println(value);//注： 这种方式，只能获取到value，而key不能迭代
+>   }
+>   ```
+>
+> - **把Map的key和value封装成Entry类型，形成一个 *Set<Entry<K,V>>***
+>
+>   ```java
+>   //
+>   Set<Entry<Integer,String>> entrys=map.entrySet();//把key，value同时取出来
+>   //
+>   for(Entry<Integer,String> entry:entrys){
+>       //通过Entry获取API
+>       Integer key=entry.getKey();
+>       String value=entry.getValue();
+>   }
+>   ```
+
+
+
+#### 3.2.3 SortedMap
+
+> key不可重复，加入即自动排序
+
+
+
+#### TreeMap
+
+> 底层采用二叉查找树来存储
+
+
+
+
+
+
+
+
+
+
+
