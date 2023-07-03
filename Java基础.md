@@ -562,15 +562,28 @@ Map [I]
 
 
 
-#### TreeMap
+#### 3.2.4 TreeMap
 
 > 底层采用二叉查找树来存储
 
+##### 构造
+
+```java
+public TreeMap();	//要求：存放的key必须是实现了java.lang.Comparable接口的类型，如：Integer，					   String，Date，LocalDate,...
+public TreeMap(Comparator c);
+public TreeMap(Map map);
+```
 
 
 
+#### 3.2.5 TreeMap和TreeSet的关系
 
+> TreeSet的底层就是TreeMap，它采用了组合方式。
 
+#### 3.2.6 HashMap和HashSet的关系
+
+> 同理，HashSet的底层也组合了HashMap，也就是说，利用Map的key作为Set的存储器，而value采用固定的Object来填充。
+>
 
 
 
