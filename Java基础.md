@@ -502,11 +502,12 @@ Map [I]
 - Long
 - String
 
-注：
-
-我们也可以使用自定义类型来作为Map的key，只要重写equals和hashcode方法。
-
-value的类型可以是任意类型。
+> **注：**
+>
+> 我们也可以使用自定义类型来作为Map的key，只要重写equals和hashcode方法。
+>
+> value的类型可以是任意类型。
+>
 
  
 
