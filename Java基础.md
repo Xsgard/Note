@@ -904,8 +904,39 @@ public interface Predicate<T> {
 }    
 ```
 
+#### 4.1.5 方法引用
 
+提供以下4种方式的引用
 
+1. **构造器引用**
 
+   语法： Class::new 或 Class<T>::new 
 
-#### 4.1.5 Operational接口
+   注：  这里的引用的构造方法是空参的。
+
+   如：
+
+   String::new 转换成对应的Lambda表达式就是:() -> new String()
+
+2. **静态方法引用**
+
+   语法：  Class::static_method
+
+3. **类的任意对象方法引用**
+
+   语法：Class::instanceMethodName
+
+   **注：此方式下，lambda表达式的第一个入参为实例方法的调用者，后面的入参与实例方法的入参一致**
+
+4. **实例方法引用**
+
+   语法：object::instanceMethodName
+
+> 注：带不带参数，是由目标接口的抽象方法决定的。
+
+#### 4.1.6 Optional接口
+
+> Optional不是一个函数式接口，而是一个精巧的工具接口，用来防止NullPointerExpection产生。
+
+Optional是一个简单的值容器，这个值可以是null，也可以是non-null。考虑到一个方法可能会返回non-null的值，也可能返回一个空值。为了不直接返回null，我们在Java8中就返回一个Optional。
+
