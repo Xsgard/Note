@@ -726,35 +726,186 @@ java.lang.Comparator接口中，除了compare方法外，还有equals方法【�
 
 > JDK8中为了配合Lambda表达式的使用，定义了4种不同功能的接口，分别是：
 >
-> ​	1.消费型接口，让调用者来决定数据的使用。
->
-> ​	2.供应型接口，让调用者决定数据是怎么来的。
->
-> ​	3.判断型接口，【谓词】
->
-> ​	4.功能型接口
+> 1. 消费型接口，让调用者来决定数据的使用。
+>2. 供应型接口，让调用者决定数据是怎么来的。
+> 3. 判断型接口，【谓词】
+>4. 功能型接口
 
 #### 4.1.1 Consumer<T>接口
 
 > 消费型接口，提供了消费函数
 
+源码：
+
+```java
+@FunctionalInterface
+public interface Consumer<T>{
+    /**
+     * Performs this operation on the given argument.
+     *
+     * @param t the input argument
+     */
+    void accept(T t);
+    
+default Consumer<T> andThen(Consumer<? super T> after) {
+        Objects.requireNonNull(after);
+        return (T t) -> { accept(t); after.accept(t); };
+    }
+}
+```
+
+**相应的子接口：**
+
+IntConsumer, LongConsumer, DoubleConsumer, BiConsumer<T,U>
+
+其中，BiConsumer<T,U>接口是可以接受2个参数的消费型接口，在JDK8中，Map接口提供了forEach方法，而这个方法就是以BiConsumer为参数的。
+
+
+
+以下为Map接口中的forEach方法的源码：
+
+```java
+default void forEach(BiConsumer<? super K, ? super V> action) {
+        Objects.requireNonNull(action);
+        for (Map.Entry<K, V> entry : entrySet()) {
+            K k;
+            V v;
+            try {
+                k = entry.getKey();
+                v = entry.getValue();
+            } catch (IllegalStateException ise) {
+                // this usually means the entry is no longer in the map.
+                throw new ConcurrentModificationException(ise);
+            }
+            action.accept(k, v);//回调BiConsumer接口中的accept方法，传入key和value
+        }
+    }
+```
+
+
+
+#### 4.1.2 Supplier<T>接口
+
+> 供应型接口，提供供应函数
+
+源码：
+
+```java
+@FunctionalInterface
+public interface Supplier<T> {
+
+    /**
+     * Gets a result.
+     *
+     * @return a result
+     */
+    T get();
+}
+```
+
+可以看出，此接口中定义了一个get函数，用来获取用户提供的对象T。
+
+
+
+**相关的接口**
+
+IntSupplier, LongSupplier, DoubleSupplier, BooleanSupplier等
+
+每个接口都只返回相应类型的对象，所以，这些接口没有泛型字母。
+
+
+
+#### 4.1.3 Function<T,R>接口
+
+> 功能型接口，提供了apply功能型函数，这个接口中，第一个泛型字母T表示apply函数接收的参数，字母R表示apply函数返回的类型。它的作用是用来转换，将输入数据T转换为另一种形式的输出数据R。
+
+源码：
+
+```java
+@FunctionalInterface
+public interface Function<T, R> {
+
+    /**
+     * Applies this function to the given argument.
+     *
+     * @param t the function argument
+     * @return the function result
+     */
+    R apply(T t);
+    
+    //两个默认方法
+    default <V> Function<V, R> compose(Function<? super V, ? extends T> before) {
+        Objects.requireNonNull(before);
+        return (V v) -> apply(before.apply(v));
+    }
+    default <V> Function<T, V> andThen(Function<? super R, ? extends V> after) {
+        Objects.requireNonNull(after);
+        return (T t) -> after.apply(apply(t));
+    }
+    
+    static <T> Function<T, T> identity() {
+        return t -> t;
+    }
+}
+```
+
+流式编程API中，经常会使用Function接口
+
+Function接口也有很多相关接口，如下；
+
+IntFunction<R>, DoubleFunction<R>, LongFunction<R>, ToIntFunction<T>, ToDoubleFunction<T>, DoubleToIntFunction
+
+
+
+#### 4.1.4 Predicate<T>接口
+
+> 谓词型接口，提供了判断的回调函数
+
+源码：【JDK11】
+
+```java
+@FunctionalInterface
+public interface Predicate<T> {
+
+    /**
+     * Evaluates this predicate on the given argument.
+     *
+     * @param t the input argument
+     * @return {@code true} if the input argument matches the predicate,
+     * otherwise {@code false}
+     */
+    boolean test(T t);
+ 
+    default Predicate<T> and(Predicate<? super T> other) {
+        Objects.requireNonNull(other);
+        return (t) -> test(t) && other.test(t);
+    }
+    
+    default Predicate<T> negate() {
+        return (t) -> !test(t);
+    }
+    
+    default Predicate<T> or(Predicate<? super T> other) {
+        Objects.requireNonNull(other);
+        return (t) -> test(t) || other.test(t);
+    }
+    
+    static <T> Predicate<T> isEqual(Object targetRef) {
+        return (null == targetRef)
+                ? Objects::isNull
+                : object -> targetRef.equals(object);
+    }
+    
+    @SuppressWarnings("unchecked")
+    static <T> Predicate<T> not(Predicate<? super T> target) {
+        Objects.requireNonNull(target);
+        return (Predicate<T>)target.negate();
+    }
+}    
+```
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#### 4.1.5 Operational接口
