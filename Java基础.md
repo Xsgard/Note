@@ -940,3 +940,18 @@ public interface Predicate<T> {
 
 Optional是一个简单的值容器，这个值可以是null，也可以是non-null。考虑到一个方法可能会返回non-null的值，也可能返回一个空值。为了不直接返回null，我们在Java8中就返回一个Optional。
 
+
+
+### 4.2.0  Stream API详解
+
+> Stream API将处理的数据看作一种Stream（流），Stream（流）在Pipeline（管道）中传输和运算，支持的运算符包含筛选、排序、聚合等，当达到终点后便得到最终的处理结果。
+
+**关键概念：**
+
+1. **元素** 是一个来自数据源的元素队列，Stream本身并不存储元素。
+2. **数据源** （即Stream的来源）包含集合、数组、IO channel、generator（发生器）等。
+3. **聚合操作** 类似SQL中的filter、map、find、match、sorted等操作
+4. **管道运算** Stream在Pipeline中运算后返回Stream对象本身，这样的多个操作串联成一个Pipeline，并形成fluent风格代码。这种方式可以优化操作，如延迟执行（laziness）和短路（short-circuiting）。
+5. **内部迭代** 不同于Java8以前对集合的遍历方式（外部迭代），Stream API采用访问者模式（Visitor）实现了内部迭代。
+6. **并行运算** Stream API支持串行（stream() ）或并行（parallelStream() ）两种操作
+
