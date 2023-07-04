@@ -955,3 +955,24 @@ Optional是一个简单的值容器，这个值可以是null，也可以是non-n
 5. **内部迭代** 不同于Java8以前对集合的遍历方式（外部迭代），Stream API采用访问者模式（Visitor）实现了内部迭代。
 6. **并行运算** Stream API支持串行（stream() ）或并行（parallelStream() ）两种操作
 
+#### 4.2.1 Stream API的特点
+
+1. Stream API的使用和同样是java8新特性的`lambda表达式`密不可分，可以大大提高编码效率和代码可读性。
+2. Stream API提供串行和并行两种操作，其中并行操作能发挥多核处理器的优势，使用`fork/join`的方式进行并行做出以提高运行速度。
+3. Stream API进行并行操作无需多线程代码即可高效的并发程序，且通常可避免多线程代码出错的问题
+
+**创建流的方式**
+
+1. **集合**直接调用stream()或者parallelStream()方法来创建流
+2. **数组**可以通过`Arrays.stream(数组)`来得到一个流
+3. 通过`Stream.of(T ... values)`来得到一个流，这个方法的底层就是`Arrays.stream(数组)`
+4. 通过`Stream.iterator()`方法
+5. 通过`Stream.generate()`方法
+
+#### 4.2.2 流的操作
+
+> 大致可以分为两大类
+>
+> 1. 中间操作，这些方法返回接口类型，以便可以连续调用，如：filter，map等
+> 2. 终端操作，这些方法返回除本接口以外的其他类型，表示本次流操作结束
+
