@@ -1044,3 +1044,103 @@ public class StreamEndOperation {
 #### 4.2.5 Collectors工具类
 
 > 用来创建Collector接口实例的工具类，提供了大量的工具方法，如：toList，toSet，toMap，toCollection,join,mapping,counting,groupingby,toMap,sumarizingXXX,summingXXX等
+
+
+
+## 5.0.0 反射
+
+#### 什么是反射？
+
+> Java反射机制是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意一个方法和属性；这种动态获取信息以及调用对象的方法的功能称为Java语言的反射机制。
+
+
+
+>任何一个Java类型被JVM加载进来后，在JVM中都会使用Class来描述这个类，换句话说，任意的Java类型在JVM中都拥有唯一的Class实例
+
+
+
+**重新认识Class**
+
+> Class就是所有类型在JVM中的类型，也叫描述类型的类型，或元类型。
+
+获取Class的三种方式
+
+- Class.forName("类的全限定名")；
+- obj.getClass();
+- 类名.class
+
+
+
+### 5.1.0 类加载
+
+> 类的加载指的是将类的.class文件中的二进制数据读入到内存中，将其放在运行时数据区的方法内，然后在堆区创建一个java.lang.Class对象，用来封装类在方法区内的数据结构。
+
+
+
+#### 5.1.1 类的加载过程
+
+**七步：加载 ==》验证 ==》 准备  ==》 解析 ==》 初始化 ==》 使用 ==》 卸载**
+
+
+
+#### 5.1.2 类加载器
+
+**Java语言系统自带有三个类加载器：**
+
+- BootStrap ClassLoader：最顶级的类加载器，主要加载核心类库，也就是我们环境变量下的rt.jar,resources.jar,charsets.jar和class等。
+- Extention ClassLoader：扩展的类加载器。**JDK9后改为PlatformClassLoader**
+- AppClass Loader：也称为SystemAppClass，加载当前应用的classpath的所有类
+
+BootStrap ClassLoader > Extention ClassLoader > AppClass Loader
+
+
+
+#### 5.1.3 双亲委派原则：
+
+> 它的工作流程是：当一个类加载器收到类加载任务，会先交给其父类加载器区完成，因此最终加载任务都会传递到顶层的 启动类加载器，只有当父类加载器无法完成加载任务时，才会回到子类加载器区尝试执行加载任务。
+
+
+
+**通过Class可以得到什么？**
+
+> 任何一个Java类型被JVM加载进来后，在JVM中都会使用Class来描述这个类，换句话说，任意Java类型在JVM中都拥有唯一的Class实例【包含基本类型】
+
+通过Class的API，我们可以获取：
+
+- 类的包信息
+- 类的修饰符
+- 类的父类或者实现的接口
+- 类的构造器
+- 类的方法
+- 类的属性
+- ...
+
+**所以，可以说，Class是反射操作的入口。**
+
+**重要的方法**
+
+**Class**
+
+- getDeclaredConstructors();//获取所有声明过的构造器 getConstructors()获取所有非私有的构造器
+
+**Constructor extends Executable**
+
+- newInstance();
+- setAccessible();
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
