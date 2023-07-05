@@ -1039,3 +1039,8 @@ public class StreamEndOperation {
 
 > 这是一个收集的操作，把归约的操作的结果进行收集，做进一步的处理，比如：以集合方式存储、分组、分区、统计、平均、join操作
 
+
+
+#### 4.2.5 Collectors工具类
+
+> 用来创建Collector接口实例的工具类，提供了大量的工具方法，如：toList，toSet，toMap，toCollection,join,mapping,counting,groupingby,toMap,sumarizingXXX,summingXXX等
