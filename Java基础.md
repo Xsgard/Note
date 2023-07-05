@@ -1128,11 +1128,9 @@ BootStrap ClassLoader > Extention ClassLoader > AppClass Loader
 - newInstance();
 - setAccessible();
 
- 
+ ***ParameterizedType和TypeVariable有什么区别**
 
-
-
-
+> TypeVariable是获取泛型字母，ParameterizedType是获取泛型字母所对应的类型
 
 
 
