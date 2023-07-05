@@ -976,3 +976,66 @@ Optional是一个简单的值容器，这个值可以是null，也可以是non-n
 > 1. 中间操作，这些方法返回接口类型，以便可以连续调用，如：filter，map等
 > 2. 终端操作，这些方法返回除本接口以外的其他类型，表示本次流操作结束
 
+**中间操作**
+
+- filter()
+- limit()
+- skip()
+- map()
+- sorted()
+- distinct()
+
+**终端操作**
+
+- forEach()
+- forEachOrdered() 适用于并行计算的流
+- count()
+- anyMatch()
+- allMatch()
+- noneMatch()
+
+
+
+#### 4.2.3 reduce操作
+
+> reduce是一种归约操作，将流归约为一个值的操作叫做归约操作，用函数式编程语言的术语来说，这种叫做折叠（flod）
+
+案例：
+
+```java
+public class StreamEndOperation {
+    public static void main(String[] args) {
+        List<Integer> integerList = Stream.iterate(1, x -> ++x).limit(10).collect(Collectors.toList());
+        //求intList集合中的所有元素之和
+        int total = integerList.stream().reduce(0, new BinaryOperator<Integer>() {
+            //此处的参数t，第一次会被0填充[也就是reduce方法的第1个参数]，从第2次执行，t就是apply方法				的返回值
+            //参数u，是被遍历的集合的元素，每执行1次，传入一个元素
+            @Override
+            public Integer apply(Integer t, Integer u) {
+                System.out.println(t + " -> " + u);
+                return t + u;
+            }
+        });
+        System.out.println(total);
+
+        total = Stream.iterate(0, (x) -> x + 1).limit(10).reduce(0, (t, u) -> t + u);
+        System.out.printf("total: %d\n", total);
+        System.out.println("--------------------------");
+        
+        integerList.stream().reduce(new BinaryOperator<Integer>() {
+            //先从流中取出2个元素，分别赋值给t和u，后面操作与reduce(T seed,BinaryOperator)是一样的
+            @Override
+            public Integer apply(Integer integer, Integer integer2) {
+                return integer + integer2;
+            }
+        });
+    }
+}
+```
+
+
+
+#### 4.2.4 collect操作
+
+> 这是一个收集的操作，把归约的操作的结果进行收集，做进一步的处理，比如：以集合方式存储、分组、分区、统计、平均、join操作
+
