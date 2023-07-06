@@ -1158,3 +1158,71 @@ BootStrap ClassLoader > Extention ClassLoader > AppClass Loader
 
 1. CPU时间片
 2. 内存
+
+### 6.1.0 开发线程类的方式
+
+#### 6.1.1 继承Thread类
+
+1.public Thread() //空参构造
+
+2.public Thread(Runnable r) //以Runnable接口为参数构造
+
+```java
+public class myThread extends Thread{
+    
+    @Override
+    piblic void run(){
+        //此线程被OS调度后要执行的代码
+    }
+}
+//创建线程对象
+Thread t=new MyThread();
+t.start(); //启动线程
+```
+
+> 注：直接调用run方法是以单线程的方式调用，多线程方式需要使用start方法
+
+一个线程调用了start方法，表示进入了“可运行态”，只有当OS分配了CPU时间片后，才会真正执行，也就是进入了“运行态（Runnable）”。
+
+#### 6.1.2 实现Runnable接口
+
+**实现java.lang.Runnable接口，并以这个接口的实例作为参数来构造Thread对象**
+
+1.首先，开发一个类来实现Runnable接口，如下：
+
+```java
+public class MyRun implements Runnable{
+    @Override
+    public void run() {
+        //...
+    }
+}
+```
+
+2.其次，创建一个Thread对象，并以MyRun的对象作为参数，如下：
+
+```java
+Thread t=new Thread(new MyRun());
+t.start();
+```
+
+#### 6.1.3 实现Callbale接口
+
+
+
+#### 6.1.4 JVM进程中的线程
+
+当JVM进程启动后，就会有两个线程
+
+- 主线程，也叫main线程，它负责调度你的程序中的main方法
+- 垃圾回收线程，也叫GC线程，它是一个后台守护线程，也叫Daemon线程。
+
+当进程中，所有的非守护线程都结束后，JVM进程就结束。
+
+#### 6.1.5 Thread中的常用方法
+
+1. join()方法，当前线程如果调用另一个线程的join方法，表示当前线程进入阻塞，知道被调用了join方法的线程运行结束。
+2. yield()方法，当前线程调用了yield方法后，表示当前线程**立刻从运行态回到可运行态**，再次等待CPU的调度。
+3. sleep()方法，当前线程调用sleep()方法，则当前线程进入阻塞
+4. interrupt()方法，中断方法，也就是给目标发送**中断信号**（线程处于阻塞状态也会监控中断信号，一旦接收到中断信号，就会立刻打破阻塞）
+
