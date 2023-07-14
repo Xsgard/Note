@@ -420,3 +420,193 @@ where u.username='jack';
 
 
 
+## 4.0.0 分组查询
+
+```mysql
+-- 语法
+SELECT 
+ [表别名.]列名 [as] [列别名],
+ [表别名.]列名 [as] [列别名],
+ ...,
+ [表别名.]列名 [as] [列别名]
+FROM 表名 [表别名] [inner|left outer|right out]JOIN 表名 [表别名] ON 关联条件
+WHERE 子句     -- 行记录的过滤
+GROUP BY 子句  -- 看待过滤后的数据记录的角度
+HAVING 子句    -- 分组之后的进一步过滤
+ORDER BY 子句;
+```
+
+**注：SELECT 后面的列要与GROUP BY 的列保持一致，除非使用组函数修饰**
+
+#### 4.0.1 组函数
+
+> 也叫多行函数/聚合函数，主要有：
+>
+> COUNT([DISTINCT] * | 列名 | 表达式) -- 统计行记录数
+>
+> SUM([DISTINCT] 列名 | 表达式) -- 统计列值之和
+>
+> AVG([DISTINCT] 列名 | 表达式))
+>
+> MIN([DISTINCT] 列名 | 表达式))
+>
+> MAX([DISTINCT] 列名 | 表达式))
+>
+> GROUP_CONCAT(列名|表达式)
+
+**分组后的进一步过滤**
+
+```sql
+-- 找出平均工资超过2500的部门
+select deptno,avg(sal) from emp group by deptno having avg(sal) > 2500;
+```
+
+> 注： where 子句是不能使用组函数的。而 having 子句可以。
+
+
+
+### 4.1.0 子查询
+
+> 查询中嵌套其它的查询，叫子查询，子查询的语法与普通查询一样，它可以放在任意位置，比如：做为子表，也就是放在select后面存在或做为查询条件【放在where子句中】、having子句中、分组子句、排序子句中。
+>
+> 注：子查询一定要使用() 括起来。
+>
+> ```sql
+> select 列名[,...] ，(子查询)
+> FROM 表名 (子查询) JOIN 表名 ON 关联条件
+> WHERE 子句 (子查询)
+> GROUP BY 子句
+> HAVING 子句 （子查询)
+> ORDER BY 子句(子查询)
+> ```
+>
+> > **所以，子查询可以嵌套**
+
+
+
+#### 4.1.1 子查询的分类
+
+> 我们根据子查询中是否要与外部查询产生关系来分类，可以分为：
+>
+> 1. 相关子查询
+>
+>    > 就是指在子查询内部要使用外部查询的变量(外联查询中定义的别名)，这种子查询也可以使用关联查询来改写。
+>
+> 2. 无关子查询
+>
+>    > 就是指子查询内部不与外部查询产生关联(不使用外部查询的变量).
+
+#### 4.1.2 TOPn 解决方案
+
+-- 找出工资排名前3的员工
+
+```sql
+select ename,sal from emp order by sal desc limit 3;
+-- 处此，limit 3 表示只取前3条记录
+-- 或者：
+select a.* from ( 
+    select ename,sal from emp order by sal desc
+) a
+limit 3;
+```
+
+#### 4.1.3 子查询的特殊操作符
+
+1. **exists 和 not exists** 用来判断某个子查询是否存在结果集
+
+   ```sql
+   --  找出各部门工资最高的员工
+   select * from emp my
+   where not exists
+   -- 子查询
+   (    select 1 from emp other      
+    	where my.sal < other.sal and my.deptno=other.deptno) 
+   order by my.deptno;
+   ```
+
+2. union 和 union all 用来求两个子查询结果并集，union all 含 重复记录。
+
+   ```sql
+   --
+   select * from emp where sal > 1500
+   UNION select * from emp where deptno = 10;
+   --
+   select * from emp where sal > 1500
+   UNION ALLselect * from emp where deptno = 10;
+   ```
+
+   > 注：这种操作符要求两个子查询的列，在类型、顺序、个数上要保持一致。
+
+3. intersect 用来求两个子查询的交集
+
+   ```sql
+   -- 
+   select * from emp where sal > 1500
+   intersect
+   select * from emp where deptno = 10;
+   ```
+
+4. minus 求两个子查询的差集【一个子查询的结果减去另一个子查询的结果】
+
+   ```sql
+   -- 
+   select * from emp where sal > 1500 minus
+   select * from emp where deptno = 10;
+   --  使用关联来模拟
+   select distinct b1.* from
+   (select * from emp where sal > 1500) b1
+   JOIN
+   (select * from emp where deptno = 10) b2
+   -- 关联条件
+   ON b1.empno != b2.empnoWHERE b1.deptno != b2.deptno;
+   -- 
+   select * from emp where sal > 1500 and deptno != 10;
+   ```
+
+
+
+## 5.0.0 数据库设计
+
+> 把业务系统中的所有数据按照二维表的关系和格式进行设计，以满足业务系统数据支撑。
+>
+> 这里最主要的一个环节就是如何把业务系统中的数据结构类型转换成表结构。
+>
+> 业务系统中的数据结构类型 也就是 实体类【它是业务系统数据的载体】
+
+**实体与表之间的映射，遵守如下规则：**
+
+1. 实体类名 映射成 表名
+2. 属性名 映射成 列名
+3. 对象在内存中的标识【地址】映射主键【PRIMARY KEY】
+4. 对象关系 映射成 外键【Foreign key】
+
+> 不管在实体关系中是一对一、一对多、还是多对多，在 RDBMS中都是采用 外键 来表示关系。
+>
+> 一对一的情况下， 外键可以定义在任意表中，但是要加 唯一性约束 【是一种特殊的一对多】
+>
+> 一对多的情况下，外键定义在多的那一边。【外键 值是可重复的】
+>
+> 多对多的情况下， 要添加中间表【因为RDBMS中不能直接表达多对多】，把外键都定义在中间表中。
+
+
+
+### 5.1.0 范式
+
+#### 5.1.1 第一范式
+
+> 表中的所有列都是原子的，不可以再分。
+
+#### 5.1.2 第二范式
+
+> 在满足1NF的基础上，表中的所有非主键列不存在**部份依赖**于主键列。
+>
+> 所谓部份依赖是指在一个具有联合主键的表中，有些列只是依赖于这个联合主键中的其中一列，而不是多列。
+
+#### 5.1.3 第三范式
+
+> 在满足2NF 的基础上，表中的所有非主键列不存在**传递依赖**于主键列。
+>
+> 所谓传递依赖是指非关键列A依赖于另一个非关键列B，而B又依赖于候选关键列C,则我们可以说，非关键列A传递依赖于候选 关键列C。
+
+> 范式不是万能的，有时候还会故意违反。
+
