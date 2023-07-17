@@ -100,3 +100,55 @@ connection.close();
 2. Statement会使数据库频繁编译SQL，可能会造成数据库缓冲区溢出。
 3. 数据库和驱动可以对PreparedStatement进行优化（只有在相关联的数据库连接没有关闭的情况下有效）
 
+### 1.3.0 特殊数据类型
+
+#### 1.3.1 日期时间
+
+> mysql 日期类型 date（只有日期）time（只有时间）datetime（日期时间都有）timestamp（日期时间都有）
+>
+> ** datetime和timestamp表现形式上完全相同，区别就在于timestamp在数据库可以自定义更新（当前时间）
+
+#### 1.3.2 大数据类型CLOB
+
+* CLOB -> text clob
+
+```java
+//存
+ps.setCharacterStream(index,reader,length);
+ps.setString(i,s);
+//取
+reader = rs.getCharacterStream(i);
+reader = rs.getClob(i).getCharacterStream();
+string = rs.getString();
+```
+
+* BLOB -> blob
+
+  ```java
+  
+  ```
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
