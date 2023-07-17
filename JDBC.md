@@ -112,22 +112,25 @@ connection.close();
 
 * CLOB -> text clob
 
-```java
-//存
-ps.setCharacterStream(index,reader,length);
-ps.setString(i,s);
-//取
-reader = rs.getCharacterStream(i);
-reader = rs.getClob(i).getCharacterStream();
-string = rs.getString();
-```
+  ```java
+  //存
+  ps.setCharacterStream(index,reader,length);
+  ps.setString(i,s);
+  //取
+  reader = rs.getCharacterStream(i);
+  reader = rs.getClob(i).getCharacterStream();
+  string = rs.getString();
+  ```
 
 * BLOB -> blob
 
   ```java
-  
+  //存
+  ps.setBinaryStream(i,inputStream,length);
+//取
+  rs.getBinaryStream(i);
+  rs.getBlob(i).getBinaryStream();
   ```
-
   
 
 
