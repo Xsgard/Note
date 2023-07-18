@@ -132,26 +132,3 @@ connection.close();
   rs.getBlob(i).getBinaryStream();
   ```
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
