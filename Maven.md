@@ -31,3 +31,15 @@ MAVEN中，每一个依赖，都必须有如下三个部分：
 
 由以上三部分组成一个完整的maven依赖。
 
+### 1.0.3 Maven生命周期
+
+* clean
+* validate
+* compile
+* test
+* package
+* verify
+* install
+* site
+* deploy
+
