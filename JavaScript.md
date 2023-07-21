@@ -15,3 +15,20 @@ JavaScript是一种弱类型语言，它的变量在定义时是无需确定类�
 js也是一种面向对象的编程语言。
 
 随着时间推移，JS进化到ES5、ES6，都是不断往语法严谨上去优化的。
+
+### 1.0.2 数据类型
+
+1. 值类型
+   * 数字型 number
+   * 字符型 string
+   * 布尔型 boolean
+   * 空值  null
+   * 未定义 undefined
+2. 引用类型
+   * Object
+   * Array
+   * Function
+   * Date
+   * RegExp
+   * ...
+
