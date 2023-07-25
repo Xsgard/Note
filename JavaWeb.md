@@ -179,15 +179,96 @@ ServletContext [I]	代表当前的应用，被所有Servlet所共享。注：一
 3. 容器确定了是哪个Servlet来服务后，就创建此Servlet的实例，并且马上调用它的init方法完成初始化，初始化完成后再调用service方法来响应客户的请求，如果是第二次过来的请求，则直接调用service方法。
 4. 在调完service方法后，对本次的请求响应就结束。
 
-#### 2.0.1 容器处理浏览器的响应
+### 2.1 容器处理浏览器的响应
 
 > 容器会维护一个核心线程池，每当一个请求来到时，容器就会派出一个线程去响应客户的请求，也就是调用目标Servlet的service方法。当service方法执行完成后，这个线程就会回到线程池。
 >
 > 所以，在容器面对高并发时，就会有可能造成核心线程池种分配不出线程来响应客户，只能等待它的service方法执行完成后，线程回到核心线程池，再来响应新的请求。
 
-#### 2.0.2 请求转发和重定向
+### 2.2 请求转发和重定向
 
 **转发**
 
 > 它是发生在服务端，由服务端决定把这个请求从一个资源上转发到另一个资源上去。Servlet规范中专门定义了请求转发的接口：RequestDispatcher
+
+**包含**
+
+> include方法，是包含 目标资源的输出内容。这是一种动态包含。
+
+**重定向**
+
+> 也是在服务端进行的，但是，它是指由服务端模拟产生一个新的请求，而之前的请求不在了。所以，重定向是不能跳到WEB-INF目录中的资源的。
+>
+> 另外，重定向由于是产生了新的请求，所以地址栏的地址也会发生变化。
+
+**sendError方法**
+
+> 把一个响应的状态码发送到浏览端，根据这个状态码来渲染页面。
+
+**在Servlet或JSP之前传递数据**
+
+> 容器提供了4种：
+>
+> * ServletContext 范围：这个对象的生命周期最长，它代表的是应用
+> * HttpSession 范围：这个对象代表会话
+> * HttpServletRequest 范围：这个对象代表请求
+> * PageContext 范围：这个对象代表页面
+
+以上类型都有一组相同的方法用来存和取绑定的对象。
+
+```java
+setAttribute(String key,Object value);
+getAttribute(String key);  => Object
+getAttributeNames(); //获取所有参数的名字
+removeAttribute(String key);
+```
+
+## 3. 会话和Cookie
+
+> HTTP协议是一种无状态的协议，所以，对于服务器来说，每一个客户的每一次请求都是”全新的“，服务端从协议层面上不会”识破“客户端。
+>
+> 但有些应用，必须要求服务端能”识别“客户端，现在可以通过一种”会话跟踪技术“来做到这一点。
+>
+> 这个会话跟踪技术有两种实现方式：
+>
+> 1. 基于Cookie实现
+> 2. 基于URL重写来实现
+
+### 3.1 Cookie
+
+> 在浏览器端，可以存储服务端发送过来的一些信息，这些信息以Cookie方式来存储。
+>
+> 原理如下：
+>
+> 1. 第一次请求，服务端会产生一个Cookie，并生成唯一性id[JSESSIONID]存放在cookie中，并通过响应头写回到浏览器端。**注：服务端会维护所有生成的Cookie的列表**
+> 2. 浏览器拿到服务端发送过来的这个Cookie，可以接收也可以不接收，用户可以在浏览器中进行设置，默认都是接受的。
+> 3. 以后每一次再发请求到服务端时，自动通过请求头把这个Cookie发回到服务端，服务端会维护每一个服务端的Cookie，这样依赖，就可以通过比对，去识别客户端。
+
+### 3.2 Session
+
+> 就是一种会话跟踪技术，基于cookie来实现
+>
+> 当我们在服务端开启Session后【通过request.getSession()】，容器会自动创建一个名为JSESSIONID的cookie，它的value是一串唯一性字符串。
+>
+> 并把这个cookie通过响应写回到浏览器，浏览器接收到cookie后，以后的每一次请求都会自动发回这个cookie，这样一来，服务端通过这个cookie的JSESSIONID就可以识别这个客户端，从而达到会话跟踪的目的。
+
+1. 开启Session的方法
+
+   * 调用request.getSession(boolean create)方法
+
+     此方法参数表示：
+
+     当create为true时，如果此请求之前已经有了session，则返回之前的存在的session，如果之前没有session，则创建一个新的session
+
+     当create为false时，如果此请求之前没有session，则返回null，如果之前已经存在了session，则返回之前的session。
+
+     **注：request.getSession()与request.getSession(true)的结果一样**
+
+     **而request.getSession(false)表示，有就返回之前的，没有就返回null**
+
+     **当我们访问了服务端的jsp资源时，就会自动创建session**
+
+2. session适合管理的资源
+
+   * 跨请求的资源/对象，比如：登录的用户、购物车
 
