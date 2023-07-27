@@ -272,3 +272,88 @@ removeAttribute(String key);
 
    * 跨请求的资源/对象，比如：登录的用户、购物车
 
+
+
+## 4.  异步Servlet处理
+
+### 4.1 异步处理API
+
+**AsyncContext 异步上下文**
+
+1. 在Servlet的@WebServlet注解中，要开启异步支持，使用asyncSupported = true
+2. 在service方法中，通过request.startAsync()方法获取异步上下文对象
+3. 调度新的线程来执行异步操作，有如下方法：
+   1. 异步上下文对象的start()方法，申请一个线程执行异步操作【Tomcat的实现就是从线程池拿另一个线程来执行，所以不太可取】
+   2. 我们重新创建一个新线程来服务
+   3. 我们自定义一个线程池来服务
+
+#### 4.1.1 `*` 有关线程池
+
+> 在JDK的java.util.concurrent包中，提供了一些获取线程池的方法以及执行任务的操作。主要涉及到如下类型
+>
+> * ThreadPoolExecutor [C] 实现类ExecutorService接口
+> * Excutors [C] 工具类，里面有很多工具方法来获取**ExecutorService**对象
+
+#### 4.1.2  有关Servlet的输入输出流
+
+> 在Servlet3.0中，虽然引入了异步操作，但是，输入【request.getInputStream】和输出流【response.getOutputStream】还是基于阻塞的，这样的话，同样会影响主线程回到线程池的效率。
+>
+> 基于这个原因，在Servlet3.1中引入了非阻塞的输入和输出流，前提是基于异步的上下文Servlet
+
+针对输入流操作，提供了ReadListener接口和WriteListener接口
+
+通过InputSteamListener.setReadListener(ReadListener listener) 来绑定一个读操作的监听事件    
+
+### 4.2  Servlet文件上传下载
+
+> 早期的Servlet规范中，没有文件上传的支持组件，需要利用第三方的技术组件，如：apache-filepuload组件。
+>
+> 现在，Servlet3.0中，提供了Part接口，可以直接做文件的上传操作，而无需提供第三方的技术组件。
+
+#### 4.2.1  文件上传编码的过程
+
+1. 在前端页面的上传表单中，一定要加enctype='multipart/form-data'属性。
+2. 在后端的Servlet中，要打上@MultipartConfig注解
+3. 在代码中通过request.getPart("上传组件的name值")；或reques.getParts();  获取Part实例
+4. 通过Part完成上传
+
+#### 4.2.2 文件的下载
+
+1. 通过请求参数获取客户端要下载的文件，同时要定位到我们在服务端的下载目录。
+
+2. 设置响应头：
+
+   ```java
+   //不缓存数据时，要设置的响应头
+   response.setHeader("Pragma","No-cache");
+   response.setHeader("Cache-Control","No-chche");
+   response.setHeader("Expires",-1);
+   
+   response.setContentType("");
+   //设置Http响应头，告诉浏览器以下载的方式处理我们的响应信息
+   response.setHeader("content-dispostion","attachment;filename="+fileName);
+   ```
+
+3. 通过IO流完成由服务端向客户端输出
+
+   ```java
+   response.getOutputSteam();
+   ```
+
+## 5. Filter
+
+> 过滤器，与Servlet一样，也是Servlet规范中的组件
+
+### 5.1 开发Filter
+
+1. 写一个类实现Filter接口
+2. 重写Filter接口的三个方法
+   1. init(Config config)
+   2. doFilter(ServletRequest req,ServletResponse resp,FilterChain chain)
+   3. destory()
+3. 我们需要在doFilter中进行逻辑判断，以决定让请求是否通过这个Filter，如果让其通过，则调用chain.doFilter()方法，如果不想让其通过，可以响应输出或者重定向、跳转、sendError()
+
+### 5.2 Filter的作用
+
+> 对请求进行拦截/过滤；如：对请求和响应进行编码设置、用户认证（授权）、日志、审核、关键词过滤以及对请求和响应的包装....
+
