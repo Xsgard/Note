@@ -39,7 +39,7 @@
 
 - 查看是否安装过MySQL
 
-  - ```linux
+  - ```shell
     rpm -qa| grep mysql
     ```
 
@@ -53,7 +53,7 @@
 
 - 启动
 
-  - ```
+  - ```shell
     # 启动
     systemctl start mysqld
     ​
@@ -346,7 +346,7 @@ DROP VIEW <视图名>
 
 ##### 创建存储过程：
 
-```
+```mysql
 CREATE PROCEDURE pro(IN num INT,OUT total INT)
 BEGIN
 	SELECT SUM(score) INTO total FROM tb_name WHERE id=num;
@@ -503,7 +503,7 @@ set global transaction isolation level read uncommitted;
 
 每个节点做多有2个分叉，左子树和右子树数据顺序左小右大
 
-这个特点就是为了保证每次查找都可以折半而减少IO次数，但是二叉树就很考验第一个跟节点的取值，因为很容易在这个特点下出新我们并发像发生的情况“树不分叉了”，
+这个特点就是为了保证每次查找都可以折半而减少IO次数，但是二叉树就很考验第一个根节点的取值，因为很容易在这个特点下出新我们并发像发生的情况“树不分叉了”，
 
 ![1694853043573](MySQL.assets/1694853043573.png)
 
@@ -519,7 +519,7 @@ set global transaction isolation level read uncommitted;
 
 ##### **B树：**
 
-改造二叉树。为了减少磁盘IO操作，就需要降低书的高度。
+改造二叉树。为了减少磁盘IO操作，就需要降低树的高度。
 
 假如key为bigint=8的字节，每个节点有两个指针，每个指针为4个字节，一个节点占用的空间16个字节。
 
